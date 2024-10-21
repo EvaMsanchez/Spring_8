@@ -3,9 +3,11 @@ package com.eva.curso.springboot.app.aop.springboot_aop.aop;
 import java.util.Arrays;
 
 import org.aspectj.lang.JoinPoint;
+import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.After;
 import org.aspectj.lang.annotation.AfterReturning;
 import org.aspectj.lang.annotation.AfterThrowing;
+import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.slf4j.Logger;
@@ -67,5 +69,33 @@ public class GreetingAspect
         String args = Arrays.toString(joinPoint.getArgs());
 
         logger.info("Después de lanzar la excepción: " + method + " con los argumentos " + args);
+    }
+
+
+    // Anida todo. se ejecuta ANTES y DESPUÉS de llamar al método, como un before y after a la vez en uno. Si hay before, antes del before y después del after
+    // Devuelve un objeto, con la ejecución del método
+    @Around("execution(* com.eva.curso.springboot.app.aop.springboot_aop.services.*.*(..))")
+    public Object loggerAround(ProceedingJoinPoint joinPoint) throws Throwable
+    {
+        // Obtener el nombre del método
+        String method = joinPoint.getSignature().getName();
+        String args = Arrays.toString(joinPoint.getArgs());
+
+        Object result = null;
+        try 
+        {
+            logger.info("El método " + method + "() con los argumentos " + args);
+            result = joinPoint.proceed(); // ejecución del método
+            logger.info("El método " + method + "() retorna el resultado " + result); // si da error no se ejecuta
+
+            return result;
+        } 
+        catch (Throwable e) // en caso de error
+        {
+          
+            logger.error("Error en la llamada del método " + method + "()");
+            throw e;
+        }
+
     }
 }
