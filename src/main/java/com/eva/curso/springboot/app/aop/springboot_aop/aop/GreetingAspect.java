@@ -4,6 +4,8 @@ import java.util.Arrays;
 
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.After;
+import org.aspectj.lang.annotation.AfterReturning;
+import org.aspectj.lang.annotation.AfterThrowing;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.slf4j.Logger;
@@ -17,7 +19,7 @@ public class GreetingAspect
     // Con esto podemos registrar los eventos
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    // Registre un loggin ANTES de llamar al método
+    // Se ejecuta ANTES de llamar al método (ejemplo loggin de prueba en el terminal)
     // JoinPoint: punto de unión. Une el aspecto con el método
     // @Before("execution(* com.eva.curso.springboot.app.aop.springboot_aop.services.*.*(..))") // se aplica a cualquier clase dentro de la carpeta service y a cualquier método de esa clase
     // @Before("execution(* com.eva.curso.springboot.app.aop.springboot_aop.services.GreetingService.sayHello(..))") // punto de corte
@@ -32,7 +34,7 @@ public class GreetingAspect
     }
 
 
-    // Realiza algo DESPUÉS de llamar al método, SIEMPRE, haya o no error
+    // Se ejecuta DESPUÉS de llamar al método, SIEMPRE, haya o no error
     @After("execution(* com.eva.curso.springboot.app.aop.springboot_aop.services.GreetingService.*(..))") // punto de corte
     public void loggerAfter(JoinPoint joinPoint)
     {
@@ -41,5 +43,29 @@ public class GreetingAspect
         String args = Arrays.toString(joinPoint.getArgs());
 
         logger.info("Después: " + method + " con los argumentos " + args);
+    }
+
+
+    // Se ejecuta DESPUÉS de llamar al método, siempre que NO haya errores. Y antes que el After.
+    @AfterReturning("execution(* com.eva.curso.springboot.app.aop.springboot_aop.services.GreetingService.*(..))") // punto de corte
+    public void loggerAfterReturning(JoinPoint joinPoint)
+    {
+        // Obtener el nombre del método
+        String method = joinPoint.getSignature().getName();
+        String args = Arrays.toString(joinPoint.getArgs());
+
+        logger.info("Después de retornar: " + method + " con los argumentos " + args);
+    }
+
+
+    // Se ejecuta DESPUÉS de llamar al método, pero siempre que HAYA errores. También antes que el After
+    @AfterThrowing("execution(* com.eva.curso.springboot.app.aop.springboot_aop.services.GreetingService.*(..))") // punto de corte
+    public void loggerAfterThrowing(JoinPoint joinPoint)
+    {
+        // Obtener el nombre del método
+        String method = joinPoint.getSignature().getName();
+        String args = Arrays.toString(joinPoint.getArgs());
+
+        logger.info("Después de lanzar la excepción: " + method + " con los argumentos " + args);
     }
 }

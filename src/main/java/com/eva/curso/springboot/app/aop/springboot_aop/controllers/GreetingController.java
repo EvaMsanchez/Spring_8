@@ -1,6 +1,5 @@
 package com.eva.curso.springboot.app.aop.springboot_aop.controllers;
 
-import java.util.Collection;
 import java.util.Collections;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,10 +15,17 @@ public class GreetingController
     @Autowired
     private GreetingService greetingService;
 
+
     // Clase saludando
     @GetMapping("/greeting")
     public ResponseEntity<?> greeting()
     {
         return ResponseEntity.ok(Collections.singletonMap("greeting", greetingService.sayHello("Pepe", "Hola que tal!")));
+    }
+
+    @GetMapping("/greeting-error")
+    public ResponseEntity<?> greetingError()
+    {
+        return ResponseEntity.ok(Collections.singletonMap("greeting", greetingService.sayHelloError("Pepe", "Hola que tal!")));
     }
 }
