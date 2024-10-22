@@ -6,7 +6,6 @@ import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.After;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
-import org.aspectj.lang.annotation.Pointcut;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.annotation.Order;
@@ -20,12 +19,10 @@ public class GreetingFooAspect
 {
     private Logger logger = LoggerFactory.getLogger(getClass());
 
-    // Para reutilizar código, definiendo el punto de corte
-    @Pointcut("execution(* com.eva.curso.springboot.app.aop.springboot_aop.services.GreetingService.*(..))")
-    private void greetingFooLoggerPointCut(){}
+    // Los Poincut están en una clase separada
 
 
-    @Before("greetingFooLoggerPointCut()") // punto de corte
+    @Before("GreetingServicePointcuts.greetingFooLoggerPointCut()") // punto de corte
     public void loggerBefore(JoinPoint joinPoint)
     {
         // Obtener el nombre del método
@@ -36,7 +33,7 @@ public class GreetingFooAspect
     }
 
 
-    @After("greetingFooLoggerPointCut()") // punto de corte
+    @After("GreetingServicePointcuts.greetingFooLoggerPointCut()") // punto de corte
     public void loggerAfter(JoinPoint joinPoint)
     {
         // Obtener el nombre del método
